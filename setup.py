@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name="yunbk",
     version='0.1.28',
     zip_safe=False,
     platforms='any',
-    packages=['yunbk'],
+    packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
     install_requires=['paramiko'],
     url="https://github.com/dantezhu/yunbk",
     license="BSD",
