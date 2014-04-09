@@ -7,6 +7,11 @@ import tarfile
 
 class YunBK(object):
 
+    tmp_dir = None
+
+    def __init__(self, tmp_dir=None):
+        self.tmp_dir = tmp_dir or '/tmp'
+
     def backup(self, backend, path):
         """
         备份对应的path
@@ -19,7 +24,7 @@ class YunBK(object):
 
         tar_prefix = os.path.basename(os.path.dirname(os.path.join(path, '')))
 
-        tar_filepath = '/tmp/%s.%s.tar' % (tar_prefix, str_now)
+        tar_filepath = os.path.join(self.tmp_dir, '%s.%s.tar' % (tar_prefix, str_now))
 
         with tarfile.open(tar_filepath, "w") as tar:
             tar.add(path)
