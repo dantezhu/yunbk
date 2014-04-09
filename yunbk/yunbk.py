@@ -24,24 +24,16 @@ class YunBK(object):
             create a temporary directory,
             and make it the new current working directory.
         """
-        self.enter_ctx()
+        self.old_cwd = os.getcwd()
+        self.tmpd = tempfile.mkdtemp(prefix=self.dir_prefix)
+        sh.cd(self.tmpd)
+        logger.info("New current working directory: %s.", self.tmpd)
         return self
 
     def __exit__(self, type, value, traceback):
         """Reseting the current working directory,
             and run synchronization if enabled.
         """
-        self.exit_ctx()
-
-    def enter_ctx(self):
-        logger.info('')
-        self.old_cwd = os.getcwd()
-        self.tmpd = tempfile.mkdtemp(prefix=self.dir_prefix)
-        sh.cd(self.tmpd)
-        logger.info("New current working directory: %s.", self.tmpd)
-
-    def exit_ctx(self):
-        logger.info('')
         sh.cd(self.old_cwd)
         logger.info("Back to %s", self.old_cwd)
         shutil.rmtree(self.tmpd)
