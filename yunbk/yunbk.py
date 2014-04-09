@@ -3,32 +3,64 @@
 import os
 import datetime
 import tarfile
+import tempfile
+import logging
+import shutil
+
+import sh
+
+logger = logging.getLogger(__name__)
 
 
 class YunBK(object):
 
-    tmp_dir = None
+    def __init__(self, backup_name, backend):
+        self.backup_name = backup_name
+        self.backend = backend
+        self.dir_prefix = "{0}_".format(backup_name)
 
-    def __init__(self, tmp_dir=None):
-        self.tmp_dir = tmp_dir or '/tmp'
+    def __enter__(self):
+        """Save the old current working directory,
+            create a temporary directory,
+            and make it the new current working directory.
+        """
+        self.enter_ctx()
+        return self
 
-    def backup(self, backend, path):
+    def __exit__(self, type, value, traceback):
+        """Reseting the current working directory,
+            and run synchronization if enabled.
+        """
+        self.exit_ctx()
+
+    def enter_ctx(self):
+        logger.info('')
+        self.old_cwd = os.getcwd()
+        self.tmpd = tempfile.mkdtemp(prefix=self.dir_prefix)
+        sh.cd(self.tmpd)
+        logger.info("New current working directory: %s.", self.tmpd)
+
+    def exit_ctx(self):
+        logger.info('')
+        sh.cd(self.old_cwd)
+        logger.info("Back to %s", self.old_cwd)
+        shutil.rmtree(self.tmpd)
+
+    def backup(self):
         """
         备份对应的path
         """
+
         now = datetime.datetime.now()
         str_now = now.strftime('%Y%m%d_%H%M%S')
 
-        if not os.path.exists(path):
-            return -1
+        tar_filepath = os.path.join(tempfile.gettempdir(), '%s.%s.tar' % (self.backup_name, str_now))
 
-        tar_prefix = os.path.basename(os.path.dirname(os.path.join(path, '')))
-
-        tar_filepath = os.path.join(self.tmp_dir, '%s.%s.tar' % (tar_prefix, str_now))
+        logger.info('tar_filepath: %s', tar_filepath)
 
         with tarfile.open(tar_filepath, "w") as tar:
-            tar.add(path)
+            tar.add(self.tmpd)
 
-        backend.upload(tar_filepath)
+        self.backend.upload(tar_filepath)
 
         os.remove(tar_filepath)

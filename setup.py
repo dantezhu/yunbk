@@ -8,7 +8,7 @@ setup(
     zip_safe=False,
     platforms='any',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
-    install_requires=['paramiko'],
+    install_requires=['paramiko', 'sh'],
     url="https://github.com/dantezhu/yunbk",
     license="BSD",
     author="dantezhu",
