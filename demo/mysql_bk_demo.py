@@ -7,7 +7,7 @@ import sh
 
 backend = LocalBackend('/data/release/backup')
 
-with YunBK('mysql', backend) as ybk:
+with YunBK('mysql', [backend]) as ybk:
     sh.mysqldump(u='root',
                  all_databases=True,
                  _out="dump.sql")

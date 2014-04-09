@@ -14,9 +14,9 @@ logger = logging.getLogger(__name__)
 
 class YunBK(object):
 
-    def __init__(self, backup_name, backend):
+    def __init__(self, backup_name, backends):
         self.backup_name = backup_name
-        self.backend = backend
+        self.backends = backends
         self.dir_prefix = "{0}_".format(backup_name)
 
     def __enter__(self):
@@ -54,7 +54,8 @@ class YunBK(object):
             tar.add(self.tmpd, os.path.basename(self.tmpd))
 
         try:
-            self.backend.upload(tar_filepath)
+            for backend in self.backends:
+                backend.upload(tar_filepath)
         except Exception, e:
             raise e
         finally:

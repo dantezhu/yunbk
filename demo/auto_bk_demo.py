@@ -14,7 +14,6 @@ logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
 
 sched = Scheduler(daemonic=False)
-bk_backend = LocalBackend('/data/release/backup/')
 
 
 def err_listener(ev):
@@ -27,7 +26,8 @@ def err_listener(ev):
 @sched.cron_schedule(second='1')
 def job():
     logger.debug(datetime.datetime.now())
-    with YunBK('ybk', bk_backend) as ybk:
+    backend = LocalBackend('/data/release/backup/')
+    with YunBK('ybk', [backend]) as ybk:
         f = open('t2.txt', 'w')
         f.write('ok')
         f.close()
