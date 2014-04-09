@@ -6,7 +6,7 @@ from baidupcs import PCS, tools
 from .base import BaseBackend
 
 
-class BaiDuYunBackend(BaseBackend):
+class PCSBackend(BaseBackend):
 
     pcs = None
     refresh_token = None
@@ -26,7 +26,7 @@ class BaiDuYunBackend(BaseBackend):
         client_id: 更新access_token需要
         client_secret: 更新access_token需要
         """
-        super(BaiDuYunBackend, self).__init__()
+        super(PCSBackend, self).__init__()
 
         self.pcs = PCS(access_token)
         self.remote_dir = remote_dir or '/apps/'
