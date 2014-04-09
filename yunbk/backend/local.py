@@ -30,4 +30,4 @@ class LocalBackend(BaseBackend):
         if os.path.isfile(self.remote_dir):
             raise ValueError('remote_dir should be dir. %s' % self.remote_dir)
 
-        shutil.copyfile(file_path, self.remote_dir)
+        shutil.copy(file_path, self.remote_dir)

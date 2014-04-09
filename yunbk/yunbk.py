@@ -7,7 +7,7 @@ import tarfile
 
 class YunBK(object):
 
-    def backup(self, path, backend):
+    def backup(self, backend, path):
         """
         备份对应的path
         """
