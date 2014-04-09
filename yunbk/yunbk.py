@@ -51,7 +51,7 @@ class YunBK(object):
         logger.info('tar_filepath: %s', tar_filepath)
 
         with tarfile.open(tar_filepath, "w") as tar:
-            tar.add(self.tmpd)
+            tar.add(self.tmpd, os.path.basename(self.tmpd))
 
         self.backend.upload(tar_filepath)
 
