@@ -53,6 +53,9 @@ class YunBK(object):
         with tarfile.open(tar_filepath, "w") as tar:
             tar.add(self.tmpd, os.path.basename(self.tmpd))
 
-        self.backend.upload(tar_filepath)
-
-        os.remove(tar_filepath)
+        try:
+            self.backend.upload(tar_filepath)
+        except Exception, e:
+            raise e
+        finally:
+            os.remove(tar_filepath)
