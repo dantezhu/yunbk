@@ -3,8 +3,9 @@
 from yunbk import YunBK
 from yunbk.backend.local import LocalBackend
 
-bk = YunBK()
-
 backend = LocalBackend('/data/release/backup')
-
-bk.backup(backend, '/Users/zny2008/gitdata/yunbk')
+with YunBK('yb', backend) as ybk:
+    f = open('t.txt', 'w')
+    f.write('ok')
+    f.close()
+    ybk.backup()
