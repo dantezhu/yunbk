@@ -12,11 +12,13 @@ class BCSBackend(BaseBackend):
     本地后端
     """
 
+    bucket_name = None
     bcs = None
     bucket = None
 
     def __init__(self, ak, sk, bucket_name, host=None):
         super(BCSBackend, self).__init__()
+        self.bucket_name = bucket_name
         self.bcs = BCS(host or BCS_HOST, ak, sk)
         self.bucket = self.bcs.bucket(bucket_name)
 
@@ -27,8 +29,8 @@ class BCSBackend(BaseBackend):
 
         filename = os.path.basename(file_path)
 
-        self.bucket.create()
-        obj = self.bucket.object(filename)
+        if self.bucket_name not in [bucket.bucket_name for bucket in self.bcs.list_buckets()]:
+            self.bucket.create()
 
-        with open(file_path, 'rb') as f:
-            obj.put_file(f)
+        obj = self.bucket.object('/' + filename)
+        obj.put_file(file_path)
