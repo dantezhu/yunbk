@@ -22,7 +22,7 @@ class BCSBackend(BaseBackend):
         self.bcs = BCS(host or BCS_HOST, ak, sk)
         self.bucket = self.bcs.bucket(bucket_name)
 
-    def upload(self, file_path):
+    def upload(self, file_path, category):
         """
         上传
         """
@@ -32,5 +32,5 @@ class BCSBackend(BaseBackend):
         if self.bucket_name not in [bucket.bucket_name for bucket in self.bcs.list_buckets()]:
             self.bucket.create()
 
-        obj = self.bucket.object('/' + filename)
+        obj = self.bucket.object('/%s/%s' % (category, filename))
         obj.put_file(file_path)

@@ -24,7 +24,7 @@ class SSHBackend(BaseBackend):
         self.password = password
         self.remote_dir = remote_dir
 
-    def upload(self, file_path):
+    def upload(self, file_path, category):
         """
         上传
         """
@@ -34,6 +34,6 @@ class SSHBackend(BaseBackend):
         transport.connect(username=self.username, password=self.password)
         sftp = paramiko.SFTPClient.from_transport(transport)
 
-        remote_path = os.path.join(self.remote_dir, filename)
+        remote_path = os.path.join(self.remote_dir, category, filename)
 
         sftp.put(file_path, remote_path)

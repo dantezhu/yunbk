@@ -55,7 +55,7 @@ class YunBK(object):
 
         try:
             for backend in self.backends:
-                backend.upload(tar_filepath)
+                backend.upload(tar_filepath, self.backup_name)
         except Exception, e:
             raise e
         finally:

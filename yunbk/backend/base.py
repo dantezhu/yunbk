@@ -3,5 +3,5 @@
 
 class BaseBackend(object):
 
-    def upload(self, filename):
+    def upload(self, file_path, folder):
         raise NotImplementedError('not implemented')
