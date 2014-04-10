@@ -8,7 +8,7 @@ logger = logging.getLogger('yunbk')
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
 
-backend = LocalBackend('/data/release/backup')
+backend = LocalBackend('/data/backup')
 with YunBK('yb', [backend]) as ybk:
     f = open('t.txt', 'w')
     f.write('ok')
