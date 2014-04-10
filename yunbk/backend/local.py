@@ -10,10 +10,6 @@ class LocalBackend(BaseBackend):
     本地后端
     """
 
-    host = None
-    port = None
-    username = None
-    password = None
     remote_dir = None
 
     def __init__(self, remote_dir):
