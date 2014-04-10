@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import errno
 import paramiko
 from .base import BaseBackend
 
@@ -34,6 +35,15 @@ class SSHBackend(BaseBackend):
         transport.connect(username=self.username, password=self.password)
         sftp = paramiko.SFTPClient.from_transport(transport)
 
-        remote_path = os.path.join(self.remote_dir, category, filename)
+        dst_dir = os.path.join(self.remote_dir, category)
+        try:
+            sftp.stat(dst_dir)
+        except IOError, e:
+            # 说明没有文件
+            if e.errno == errno.ENOENT:
+                sftp.mkdir(dst_dir)
+            else:
+                raise e
 
+        remote_path = os.path.join(dst_dir, filename)
         sftp.put(file_path, remote_path)
