@@ -10,7 +10,7 @@ OSS_HOST = 'oss.aliyuncs.com'
 
 class OSSBackend(BaseBackend):
     """
-    本地后端
+    阿里OSS后端
     """
 
     bucket_name = None
@@ -33,13 +33,13 @@ class OSSBackend(BaseBackend):
 
         if rsp.status not in (200, 409):
             # 说明没有创建成功
-            raise Exception('create_bucket fail: %s' % rsp)
+            raise Exception('create_bucket fail: <%s> %s' % (rsp.status, rsp.read()))
 
         rsp = self.oss.put_object_from_file(
             self.bucket_name,
-            '/%s/%s' % (category, filename),
+            os.path.join(category, filename),
             file_path,
         )
 
         if rsp.status != 200:
-            raise Exception('put_object_from_file fail: %s' % rsp)
+            raise Exception('put_object_from_file fail: <%s> %s' % (rsp.status, rsp.read()))

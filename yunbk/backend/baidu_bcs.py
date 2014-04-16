@@ -9,7 +9,7 @@ BCS_HOST = 'bcs.duapp.com'
 
 class BCSBackend(BaseBackend):
     """
-    本地后端
+    百度BCS后端
     """
 
     bucket_name = None
@@ -32,5 +32,5 @@ class BCSBackend(BaseBackend):
         if self.bucket_name not in [bucket.bucket_name for bucket in self.bcs.list_buckets()]:
             self.bucket.create()
 
-        obj = self.bucket.object('/%s/%s' % (category, filename))
+        obj = self.bucket.object(os.path.join('/', category, filename))
         obj.put_file(file_path)
