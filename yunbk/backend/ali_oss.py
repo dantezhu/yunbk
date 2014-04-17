@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+OSS SDK: http://help.aliyun.com/view/13438815.html
+"""
 
 import os
 from .base import BaseBackend

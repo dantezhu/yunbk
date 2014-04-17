@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+BCS SDK: http://developer.baidu.com/wiki/index.php?title=docs/cplat/bcs/sdk
+"""
 
 import os
 from .base import BaseBackend
