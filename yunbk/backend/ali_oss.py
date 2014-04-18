@@ -34,8 +34,9 @@ class OSSBackend(BaseBackend):
         # 尝试创建bucket
         rsp = self.oss.create_bucket(self.bucket_name)
 
-        if rsp.status not in (200, 409):
+        if rsp.status != 200:
             # 说明没有创建成功
+            # 文档说409可能代表已经存在，但经过测试已经存在也会返回200
             raise Exception('create_bucket fail: <%s> %s' % (rsp.status, rsp.read()))
 
         rsp = self.oss.put_object_from_file(
