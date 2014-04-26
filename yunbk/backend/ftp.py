@@ -2,7 +2,7 @@
 
 import os
 import errno
-import paramiko
+from ftplib import FTP
 from .base import BaseBackend
 
 
@@ -17,10 +17,10 @@ class FTPBackend(BaseBackend):
     password = None
     remote_dir = None
 
-    def __init__(self, host, port, username, password, remote_dir):
+    def __init__(self, host, username, password, remote_dir, port=None):
         super(FTPBackend, self).__init__()
         self.host = host
-        self.port = port
+        self.port = port or 21
         self.username = username
         self.password = password
         self.remote_dir = remote_dir
@@ -31,19 +31,16 @@ class FTPBackend(BaseBackend):
         """
         filename = os.path.basename(file_path)
 
-        transport = paramiko.Transport((self.host, self.port))
-        transport.connect(username=self.username, password=self.password)
-        sftp = paramiko.SFTPClient.from_transport(transport)
-
         dst_dir = os.path.join(self.remote_dir, category)
-        try:
-            sftp.stat(dst_dir)
-        except IOError, e:
-            # 说明没有文件
-            if e.errno == errno.ENOENT:
-                sftp.mkdir(dst_dir)
-            else:
-                raise e
-
         remote_path = os.path.join(dst_dir, filename)
-        sftp.put(file_path, remote_path)
+
+        client = FTP()
+        client.connect(self.host, self.port)
+        client.login(self.username, self.password)
+
+        print client.dir(dst_dir)
+
+        with open(file_path, 'rb') as local_file:
+            client.storbinary('STOR ' + remote_path, local_file)
+
+        client.quit()
