@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import errno
 from ftplib import FTP
 from .base import BaseBackend
 
@@ -38,7 +37,10 @@ class FTPBackend(BaseBackend):
         client.connect(self.host, self.port)
         client.login(self.username, self.password)
 
-        print client.dir(dst_dir)
+        try:
+            client.cwd(dst_dir)
+        except:
+            client.mkd(dst_dir)
 
         with open(file_path, 'rb') as local_file:
             client.storbinary('STOR ' + remote_path, local_file)
