@@ -6,7 +6,7 @@ import paramiko
 from .base import BaseBackend
 
 
-class SFTPBackend(BaseBackend):
+class FTPBackend(BaseBackend):
     """
     ssh后端
     """
@@ -17,10 +17,10 @@ class SFTPBackend(BaseBackend):
     password = None
     remote_dir = None
 
-    def __init__(self, host, username, password, remote_dir, port=None):
-        super(SFTPBackend, self).__init__()
+    def __init__(self, host, port, username, password, remote_dir):
+        super(FTPBackend, self).__init__()
         self.host = host
-        self.port = port or 22
+        self.port = port
         self.username = username
         self.password = password
         self.remote_dir = remote_dir
