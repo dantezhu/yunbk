@@ -52,7 +52,8 @@ class FTPBackend(BaseBackend):
 
     def clean(self, category, keeps):
         dst_dir = os.path.join(self.remote_dir, category)
+        filename_list = self.ftp.nlst(dst_dir)
 
-        delete_filename_list = filter_delete_filename_list(self.ftp.dir(dst_dir), keeps)
+        delete_filename_list = filter_delete_filename_list(filename_list, keeps)
         for filename in delete_filename_list:
             self.ftp.delete(os.path.join(dst_dir, filename))
