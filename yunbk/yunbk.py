@@ -9,6 +9,8 @@ import shutil
 
 import sh
 
+import constants
+
 logger = logging.getLogger(__name__)
 
 
@@ -44,7 +46,7 @@ class YunBK(object):
         """
 
         now = datetime.datetime.now()
-        str_now = now.strftime('%Y%m%d_%H%M%S')
+        str_now = now.strftime(constants.STRFTIME_TPL)
 
         tar_filepath = os.path.join(tempfile.gettempdir(), '%s.%s.tar' % (self.backup_name, str_now))
 
