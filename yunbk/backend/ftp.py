@@ -3,6 +3,7 @@
 import os
 from ftplib import FTP
 from .base import BaseBackend
+from ..utils import filter_delete_filename_list
 
 
 class FTPBackend(BaseBackend):
@@ -16,6 +17,8 @@ class FTPBackend(BaseBackend):
     password = None
     remote_dir = None
 
+    ftp = None
+
     def __init__(self, host, username, password, remote_dir, port=None):
         super(FTPBackend, self).__init__()
         self.host = host
@@ -23,6 +26,10 @@ class FTPBackend(BaseBackend):
         self.username = username
         self.password = password
         self.remote_dir = remote_dir
+
+        self.ftp = FTP()
+        self.ftp.connect(self.host, self.port)
+        self.ftp.login(self.username, self.password)
 
     def upload(self, file_path, category):
         """
@@ -33,16 +40,19 @@ class FTPBackend(BaseBackend):
         dst_dir = os.path.join(self.remote_dir, category)
         remote_path = os.path.join(dst_dir, filename)
 
-        client = FTP()
-        client.connect(self.host, self.port)
-        client.login(self.username, self.password)
-
         try:
-            client.cwd(dst_dir)
+            self.ftp.cwd(dst_dir)
         except:
-            client.mkd(dst_dir)
+            self.ftp.mkd(dst_dir)
 
         with open(file_path, 'rb') as local_file:
-            client.storbinary('STOR ' + remote_path, local_file)
+            self.ftp.storbinary('STOR ' + remote_path, local_file)
 
-        client.quit()
+        #self.ftp.quit()
+
+    def clean(self, category, keeps):
+        dst_dir = os.path.join(self.remote_dir, category)
+
+        delete_filename_list = filter_delete_filename_list(self.ftp.dir(dst_dir), keeps)
+        for filename in delete_filename_list:
+            self.ftp.delete(os.path.join(dst_dir, filename))
