@@ -3,6 +3,7 @@
 import os
 from .base import BaseBackend
 import shutil
+from ..utils import filter_delete_filename_list
 
 
 class LocalBackend(BaseBackend):
@@ -30,3 +31,12 @@ class LocalBackend(BaseBackend):
             raise ValueError('dst_dir should be dir. %s' % dst_dir)
 
         shutil.copy(file_path, dst_dir)
+
+    def clean(self, category, keeps):
+        """
+        删除掉不需要的
+        """
+        dst_dir = os.path.join(self.remote_dir, category)
+
+        delete_filename_list = filter_delete_filename_list(os.listdir(dst_dir), keeps)
+        print delete_filename_list

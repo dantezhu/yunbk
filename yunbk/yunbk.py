@@ -16,9 +16,10 @@ logger = logging.getLogger(__name__)
 
 class YunBK(object):
 
-    def __init__(self, backup_name, backends):
+    def __init__(self, backup_name, backends, keeps=None):
         self.backup_name = backup_name
         self.backends = backends
+        self.keeps = keeps or constants.KEEPS
         self.dir_prefix = "{0}_".format(backup_name)
 
     def __enter__(self):
@@ -62,3 +63,10 @@ class YunBK(object):
             raise e
         finally:
             os.remove(tar_filepath)
+
+    def rotate(self):
+        """
+        清理无用的
+        """
+        for backend in self.backends:
+            backend.clean(self.backup_name, self.keeps)

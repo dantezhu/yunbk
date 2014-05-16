@@ -14,3 +14,4 @@ with YunBK('yb', [backend]) as ybk:
     f.write('ok')
     f.close()
     ybk.backup()
+    ybk.rotate()
