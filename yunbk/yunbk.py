@@ -19,7 +19,7 @@ class YunBK(object):
     def __init__(self, backup_name, backends, keeps=None):
         self.backup_name = backup_name
         self.backends = backends
-        self.keeps = keeps or constants.KEEPS
+        self.keeps = keeps
         self.dir_prefix = "{0}_".format(backup_name)
 
     def __enter__(self):
@@ -68,5 +68,9 @@ class YunBK(object):
         """
         清理无用的
         """
+        if not self.keeps:
+            # 就是不删除
+            return
+
         for backend in self.backends:
             backend.clean(self.backup_name, self.keeps)

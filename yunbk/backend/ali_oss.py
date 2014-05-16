@@ -6,6 +6,7 @@ OSS SDK: http://help.aliyun.com/view/13438815.html
 import os
 from .base import BaseBackend
 from oss.oss_api import OssAPI
+from ..utils import filter_delete_filename_list
 
 
 OSS_HOST = 'oss.aliyuncs.com'
@@ -47,3 +48,7 @@ class OSSBackend(BaseBackend):
 
         if rsp.status != 200:
             raise Exception('put_object_from_file fail: <%s> %s' % (rsp.status, rsp.read()))
+
+    def clean(self, category, keeps):
+        delete_filename_list = filter_delete_filename_list(self.oss.list_bucket(self.bucket_name), keeps)
+        self.oss.delete_objects(self.bucket_name, delete_filename_list)

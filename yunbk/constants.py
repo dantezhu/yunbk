@@ -18,7 +18,7 @@ STRFTIME_TPL = '%Y%m%d_%H%M%S'
 # years 和 months 会不太一样，具体参考其每个的mark函数
 # 所以下面的写法，相当于保存最近7天的每天第一个，最近4周的每周第一个，最近3个月的每月第一个，最近1秒的的每秒第一个
 # 即一天内多个的话，会被删除为只剩下一个
-KEEPS = dict(
+KEEPS_NORMAL = dict(
     days=7,
     weeks=4,
     months=3,

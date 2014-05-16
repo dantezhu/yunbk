@@ -6,6 +6,7 @@ BCS SDK: http://developer.baidu.com/wiki/index.php?title=docs/cplat/bcs/sdk
 import os
 from .base import BaseBackend
 from pybcs import BCS
+from ..utils import filter_delete_filename_list
 
 BCS_HOST = 'bcs.duapp.com'
 
@@ -37,3 +38,7 @@ class BCSBackend(BaseBackend):
 
         obj = self.bucket.object(os.path.join('/', category, filename))
         obj.put_file(file_path)
+
+    def clean(self, category, keeps):
+        delete_filename_list = filter_delete_filename_list(self.bucket.list_objects(), keeps)
+        # TODO
