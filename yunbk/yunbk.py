@@ -64,6 +64,9 @@ class YunBK(object):
         finally:
             os.remove(tar_filepath)
 
+        # 清理
+        self.rotate()
+
     def rotate(self):
         """
         清理无用的
