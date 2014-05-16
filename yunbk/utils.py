@@ -9,8 +9,6 @@ def filter_delete_filename_list(filename_list, keeps):
     """
     获取需要删除的
     """
-    print keeps
-
     time_to_filename = dict()
 
     for filename in filename_list:
@@ -26,6 +24,6 @@ def filter_delete_filename_list(filename_list, keeps):
         time_to_filename[dt] = filename
 
     # 要删除的时间，如果同一天有好多个的话，只保留第一个
-    delete_times = to_keep(time_to_filename.keys(), **keeps)
+    delete_times = to_delete(time_to_filename.keys(), **keeps)
 
     return [time_to_filename[it] for it in delete_times]

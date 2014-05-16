@@ -39,4 +39,5 @@ class LocalBackend(BaseBackend):
         dst_dir = os.path.join(self.remote_dir, category)
 
         delete_filename_list = filter_delete_filename_list(os.listdir(dst_dir), keeps)
-        print delete_filename_list
+        for filename in delete_filename_list:
+            os.remove(os.path.join(dst_dir, filename))
