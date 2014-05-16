@@ -40,5 +40,11 @@ class BCSBackend(BaseBackend):
         obj.put_file(file_path)
 
     def clean(self, category, keeps):
-        delete_filename_list = filter_delete_filename_list(self.bucket.list_objects(), keeps)
-        # TODO
+        # 和阿里云不一样，必须以 / 开头
+        obj_list = self.bucket.list_objects('/' + category + '/')
+        filename_list = [obj.object_name for obj in obj_list]
+
+        delete_filename_list = set(filter_delete_filename_list(filename_list, keeps))
+        for obj in obj_list:
+            if obj.object_name in delete_filename_list:
+                obj.delete()
