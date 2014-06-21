@@ -10,7 +10,7 @@ setup(
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
     install_requires=['paramiko', 'sh', 'grandfatherson'],
     url="https://github.com/dantezhu/yunbk",
-    license="BSD",
+    license="MIT",
     author="dantezhu",
     author_email="zny2008@gmail.com",
     description="make backup easier",
