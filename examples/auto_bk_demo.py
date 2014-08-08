@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-from apscheduler.scheduler import Scheduler
-from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_MISSED
+from apscheduler2.scheduler import Scheduler
+from apscheduler2.events import EVENT_JOB_ERROR, EVENT_JOB_MISSED
 import logging
 
 from yunbk.yunbk import YunBK
