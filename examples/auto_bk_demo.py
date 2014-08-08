@@ -1,29 +1,31 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-from apscheduler2.scheduler import Scheduler
-from apscheduler2.events import EVENT_JOB_ERROR, EVENT_JOB_MISSED
+import time
 import logging
-
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_MISSED
 from yunbk.yunbk import YunBK
 from yunbk.backend.local import LocalBackend
 
 
-logger = logging.getLogger('default')
+logger = logging.getLogger('main')
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
 
-sched = Scheduler(daemonic=False)
+# daemon = True 代表子线程会随主线程一起结束
+sched = BackgroundScheduler(daemon=True)
 
 
-def err_listener(ev):
-    if ev.exception:
-        logger.fatal('%s error.', str(ev.job), exc_info=True)
+def error_listener(event):
+    if event.exception:
+        logger.fatal('job %s error. scheduled_run_time: %s, exception: %s, traceback:\n %s',
+                     event.job_id, event.scheduled_run_time, event.exception, event.traceback)
     else:
-        logger.info('%s miss', str(ev.job))
+        logger.info('job %s miss', event.job_id)
 
 
-@sched.cron_schedule(second='1')
+@sched.scheduled_job('cron', day_of_week='0-5', hour='9-12,13-24', second='*')
 def job():
     logger.debug(datetime.datetime.now())
     backend = LocalBackend('/data/release/backup/')
@@ -34,7 +36,20 @@ def job():
         ybk.backup()
 
 
-if __name__ == '__main__':
-    sched.add_listener(err_listener, EVENT_JOB_ERROR | EVENT_JOB_MISSED)
+def main():
+    sched.add_listener(error_listener, EVENT_JOB_ERROR | EVENT_JOB_MISSED)
     sched.start()
+
+    while 1:
+        try:
+            time.sleep(1)
+        except KeyboardInterrupt:
+            break
+        except:
+            logger.error('exc occur.', exc_info=True)
+            break
+
+
+if __name__ == '__main__':
+    main()
 
