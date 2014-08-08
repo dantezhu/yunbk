@@ -19,7 +19,7 @@ sched = BackgroundScheduler(daemon=True)
 
 def error_listener(event):
     if event.exception:
-        logger.fatal('job %s error. scheduled_run_time: %s, exception: %s, traceback:\n %s',
+        logger.fatal('job %s error. scheduled_run_time: %s, exception: %s, traceback:\n%s',
                      event.job_id, event.scheduled_run_time, event.exception, event.traceback)
     else:
         logger.info('job %s miss', event.job_id)
