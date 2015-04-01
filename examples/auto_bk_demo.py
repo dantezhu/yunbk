@@ -28,9 +28,9 @@ def backup():
     logger.debug(datetime.datetime.now())
     backend = LocalBackend('/data/release/backup/')
     with YunBK('ybk', [backend]) as ybk:
-        f = open('t2.txt', 'w')
-        f.write('ok')
-        f.close()
+        with open('t.txt', 'w') as f:
+            f.write('ok')
+
         ybk.backup()
 
 
