@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-OSS SDK: http://help.aliyun.com/view/13438815.html
+阿里云 OSS SDK: https://docs.aliyun.com
 """
 
 import os
