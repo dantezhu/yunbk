@@ -33,6 +33,7 @@ with YunBK('yb', [backend], keeps=KEEPS_NORMAL) as ybk:
     # 备份mysql某个库
     sh.mysqldump(
         'db1',
+        "--ignore-table=db1.tb1",
         u='root',
         p='passwd',
         _out="dump_db1.sql"
