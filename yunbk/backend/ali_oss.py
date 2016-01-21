@@ -9,9 +9,6 @@ from .base import BaseBackend
 from ..utils import filter_delete_filename_list
 
 
-OSS_HOST = 'oss.aliyuncs.com'
-
-
 class OSSBackend(BaseBackend):
     """
     阿里OSS后端
