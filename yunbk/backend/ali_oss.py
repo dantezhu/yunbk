@@ -4,26 +4,31 @@
 """
 
 import os
-from oss.oss_api import OssAPI
+import oss2
 from .base import BaseBackend
 from ..utils import filter_delete_filename_list
 
 
-OSS_HOST = 'oss.aliyuncs.com'
-
-
 class OSSBackend(BaseBackend):
     """
-    阿里OSS后端
+    阿里OSS后端，依赖 oss v2
+    pip install oss2
     """
 
-    bucket_name = None
-    oss = None
+    bucket = None
 
-    def __init__(self, access_id, secret_access_key, bucket_name, host=None):
+    def __init__(self, access_key_id, access_key_secret, host, bucket_name):
+        """
+        access_key_id:
+        access_key_secret:
+        host: 域名，如 http://oss-cn-hangzhou.aliyuncs.com
+        bucket_name: 不需要在后台自动创建，也会自动创建好
+        """
         super(OSSBackend, self).__init__()
-        self.bucket_name = bucket_name
-        self.oss = OssAPI(host or OSS_HOST, access_id, secret_access_key)
+        auth = oss2.Auth(access_key_id, access_key_secret)
+        self.bucket = oss2.Bucket(auth, host, bucket_name)
+        # 无论是否已经存在，都自动创建一次，不会报错.
+        self.bucket.create_bucket()
 
     def upload(self, file_path, category):
         """
@@ -32,16 +37,7 @@ class OSSBackend(BaseBackend):
 
         filename = os.path.basename(file_path)
 
-        # 尝试创建bucket
-        rsp = self.oss.create_bucket(self.bucket_name)
-
-        if rsp.status != 200:
-            # 说明没有创建成功
-            # 文档说409可能代表已经存在，但经过测试已经存在也会返回200
-            raise Exception('create_bucket fail: <%s> %s' % (rsp.status, rsp.read()))
-
-        rsp = self.oss.put_object_from_file(
-            self.bucket_name,
+        rsp = self.bucket.put_object_from_file(
             os.path.join(category, filename),
             file_path,
         )
@@ -50,7 +46,7 @@ class OSSBackend(BaseBackend):
             raise Exception('put_object_from_file fail: <%s> %s' % (rsp.status, rsp.read()))
 
     def clean(self, category, keeps):
-        object_list = self.oss.list_objects(self.bucket_name, category+'/')
-
+        object_list = [obj.key for obj in self.bucket.list_objects(category+'/').object_list]
         delete_filename_list = filter_delete_filename_list(object_list, keeps)
-        self.oss.delete_objects(self.bucket_name, delete_filename_list)
+        if delete_filename_list:
+            self.bucket.batch_delete_objects(delete_filename_list)
