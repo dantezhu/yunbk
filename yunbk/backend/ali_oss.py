@@ -11,7 +11,8 @@ from ..utils import filter_delete_filename_list
 
 class OSSBackend(BaseBackend):
     """
-    阿里OSS后端
+    阿里OSS后端，依赖 oss v2
+    pip install oss2
     """
 
     bucket = None
@@ -21,11 +22,13 @@ class OSSBackend(BaseBackend):
         access_key_id:
         access_key_secret:
         host: 域名，如 http://oss-cn-hangzhou.aliyuncs.com
-        bucket_name: 需要提前在后台创建好，这里不再自动创建
+        bucket_name: 不需要在后台自动创建，也会自动创建好
         """
         super(OSSBackend, self).__init__()
         auth = oss2.Auth(access_key_id, access_key_secret)
         self.bucket = oss2.Bucket(auth, host, bucket_name)
+        # 无论是否已经存在，都自动创建一次，不会报错.
+        self.bucket.create_bucket()
 
     def upload(self, file_path, category):
         """
@@ -43,7 +46,7 @@ class OSSBackend(BaseBackend):
             raise Exception('put_object_from_file fail: <%s> %s' % (rsp.status, rsp.read()))
 
     def clean(self, category, keeps):
-        object_list = self.bucket.list_objects(category+'/')
-
+        object_list = [obj.key for obj in self.bucket.list_objects(category+'/').object_list]
         delete_filename_list = filter_delete_filename_list(object_list, keeps)
-        self.bucket.batch_delete_objects(delete_filename_list)
+        if delete_filename_list:
+            self.bucket.batch_delete_objects(delete_filename_list)
