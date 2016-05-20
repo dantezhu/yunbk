@@ -31,14 +31,14 @@ class SFTPBackend(BaseBackend):
         # 这一步会建立连接
         transport = paramiko.Transport((self.host, self.port))
         try:
+            # 登录验证
             transport.connect(username=self.username, password=self.password)
+            self.sftp = paramiko.SFTPClient.from_transport(transport)
         except:
             # 所以如果登录失败，要记得关闭连接
             transport.close()
             t, v, tb = sys.exc_info()
             raise t, v, tb
-
-        self.sftp = paramiko.SFTPClient.from_transport(transport)
 
     def upload(self, file_path, category):
         """
