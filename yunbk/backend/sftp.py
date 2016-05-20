@@ -18,6 +18,7 @@ class SFTPBackend(BaseBackend):
     username = None
     password = None
     remote_dir = None
+    transport = None
     sftp = None
 
     def __init__(self, host, username, password, remote_dir, port=None):
@@ -29,14 +30,20 @@ class SFTPBackend(BaseBackend):
         self.remote_dir = remote_dir
 
         # 这一步会建立连接
-        transport = paramiko.Transport((self.host, self.port))
         try:
+            self.transport = paramiko.Transport((self.host, self.port))
             # 登录验证
-            transport.connect(username=self.username, password=self.password)
-            self.sftp = paramiko.SFTPClient.from_transport(transport)
+            self.transport.connect(username=self.username, password=self.password)
+            self.sftp = paramiko.SFTPClient.from_transport(self.transport)
         except:
+            # 这个的关闭，并不会关闭transport的连接
+            if self.sftp:
+                self.sftp.close()
+
             # 所以如果登录失败，要记得关闭连接
-            transport.close()
+            if self.transport:
+                self.transport.close()
+
             t, v, tb = sys.exc_info()
             raise t, v, tb
 
