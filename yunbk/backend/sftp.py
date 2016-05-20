@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import os
 import errno
 import paramiko
@@ -27,9 +28,16 @@ class SFTPBackend(BaseBackend):
         self.password = password
         self.remote_dir = remote_dir
 
-        # 初始化
+        # 这一步会建立连接
         transport = paramiko.Transport((self.host, self.port))
-        transport.connect(username=self.username, password=self.password)
+        try:
+            transport.connect(username=self.username, password=self.password)
+        except:
+            # 所以如果登录失败，要记得关闭连接
+            transport.close()
+            t, v, tb = sys.exc_info()
+            raise t, v, tb
+
         self.sftp = paramiko.SFTPClient.from_transport(transport)
 
     def upload(self, file_path, category):
