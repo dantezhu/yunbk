@@ -49,11 +49,11 @@ class YunBK(object):
         now = datetime.datetime.now()
         str_now = now.strftime(constants.STRFTIME_TPL)
 
-        tar_filepath = os.path.join(tempfile.gettempdir(), '%s.%s.tar' % (self.backup_name, str_now))
+        tar_filepath = os.path.join(tempfile.gettempdir(), '%s.%s.tar.gz' % (self.backup_name, str_now))
 
         logger.info('tar_filepath: %s', tar_filepath)
 
-        with tarfile.open(tar_filepath, "w") as tar:
+        with tarfile.open(tar_filepath, "w:gz") as tar:
             tar.add(self.tmpd, os.path.basename(self.tmpd))
 
         try:
