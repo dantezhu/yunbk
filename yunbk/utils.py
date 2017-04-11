@@ -13,11 +13,9 @@ def filter_delete_filename_list(filename_list, keeps):
 
     for filename in filename_list:
         slist = filename.split('.')
-        if len(slist) < 2:
-            #like yb.20140516_114126.tar
-            continue
+        # like yb.20140516_114126.tar.gz
 
-        str_datetime = slist[-2]
+        str_datetime = slist[1]
 
         dt = datetime.datetime.strptime(str_datetime, constants.STRFTIME_TPL)
 
