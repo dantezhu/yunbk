@@ -26,3 +26,7 @@ KEEPS_NORMAL = dict(
     days=7,
     seconds=3600*24,
 )
+
+
+# 默认的临时存储根目录
+TMP_ROOT_DIR = '/tmp'
