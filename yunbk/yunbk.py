@@ -4,14 +4,11 @@ import os
 import datetime
 import tarfile
 import tempfile
-import logging
 import shutil
-
 import sh
 
 import constants
-
-logger = logging.getLogger(__name__)
+from log import logger
 
 
 class YunBK(object):
@@ -58,7 +55,7 @@ class YunBK(object):
         now = datetime.datetime.now()
         str_now = now.strftime(constants.STRFTIME_TPL)
 
-        # 临时tar包目录
+        # 临时tar目录
         tmp_tar_dir = tempfile.mkdtemp(prefix=self.dir_prefix, dir=self.tmp_root_dir, suffix='_tar')
 
         tar_file_path = os.path.join(tmp_tar_dir, '%s.%s.tar.gz' % (self.backup_name, str_now))
@@ -68,13 +65,15 @@ class YunBK(object):
         with tarfile.open(tar_file_path, "w:gz") as tar:
             tar.add(self.tmp_work_dir, os.path.basename(self.tmp_work_dir))
 
-        try:
-            for backend in self.backends:
+        for backend in self.backends:
+            try:
                 backend.upload(tar_file_path, self.backup_name)
-        except Exception, e:
-            raise e
-        finally:
-            shutil.rmtree(tmp_tar_dir)
+            except Exception, e:
+                logger.error('exc occur. e: %s, tar_file_path: %s, backend: %s',
+                             e, tar_file_path, backend, exc_info=True)
+
+        # 删除tar目录
+        shutil.rmtree(tmp_tar_dir)
 
         # 清理
         self.rotate()
@@ -88,4 +87,7 @@ class YunBK(object):
             return
 
         for backend in self.backends:
-            backend.clean(self.backup_name, self.keeps)
+            try:
+                backend.clean(self.backup_name, self.keeps)
+            except Exception, e:
+                logger.error('exc occur. e: %s, backend: %s', e, backend, exc_info=True)
