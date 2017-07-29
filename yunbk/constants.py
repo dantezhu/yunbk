@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# 名字
+NAME = 'yunbk'
+
 # 转化成time的格式
 STRFTIME_TPL = '%Y%m%d_%H%M%S'
 
@@ -26,3 +29,7 @@ KEEPS_NORMAL = dict(
     days=7,
     seconds=3600*24,
 )
+
+
+# 默认的临时存储根目录
+TMP_ROOT_DIR = '/tmp'
