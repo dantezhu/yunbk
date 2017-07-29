@@ -39,7 +39,7 @@ class YunBK(object):
         self.old_work_dir = os.getcwd()
         self.tmp_work_dir = tempfile.mkdtemp(prefix=self.dir_prefix, dir=self.tmp_root_dir, suffix='_work')
         sh.cd(self.tmp_work_dir)
-        logger.info("New current working directory: %s.", self.tmp_work_dir)
+        logger.info("New current working directory: %s", self.tmp_work_dir)
         return self
 
     def __exit__(self, type, value, traceback):
