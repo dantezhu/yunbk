@@ -27,8 +27,11 @@ class OSSBackend(BaseBackend):
         super(OSSBackend, self).__init__()
         auth = oss2.Auth(access_key_id, access_key_secret)
         self.bucket = oss2.Bucket(auth, host, bucket_name)
-        # 无论是否已经存在，都自动创建一次，不会报错.
-        self.bucket.create_bucket()
+
+        service = oss2.Service(auth, host)
+        if bucket_name not in [b.name for b in oss2.BucketIterator(service)]:
+            # 说明bucket不存在
+            self.bucket.create_bucket()
 
     def upload(self, file_path, category):
         """
