@@ -21,8 +21,8 @@ class SFTPBackend(BaseBackend):
     transport = None
     sftp = None
 
-    def __init__(self, host, username, password, remote_dir, port=None):
-        super(SFTPBackend, self).__init__()
+    def __init__(self, host, username, password, remote_dir, port=None, keeps=None):
+        super(SFTPBackend, self).__init__(keeps)
         self.host = host
         self.port = port or 22
         self.username = username
@@ -66,7 +66,11 @@ class SFTPBackend(BaseBackend):
         remote_path = os.path.join(dst_dir, filename)
         self.sftp.put(file_path, remote_path)
 
-    def clean(self, category, keeps):
+    def clean(self, category, keeps=None):
+        keeps = keeps or self.keeps
+        if not keeps:
+            return
+
         dst_dir = os.path.join(self.remote_dir, category)
 
         delete_filename_list = filter_delete_filename_list(self.sftp.listdir(dst_dir), keeps)

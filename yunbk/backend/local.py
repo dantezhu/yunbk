@@ -11,18 +11,18 @@ class LocalBackend(BaseBackend):
     本地后端
     """
 
-    remote_dir = None
+    root_dir = None
 
-    def __init__(self, remote_dir):
-        super(LocalBackend, self).__init__()
-        self.remote_dir = remote_dir
+    def __init__(self, root_dir, keeps=None):
+        super(LocalBackend, self).__init__(keeps)
+        self.root_dir = root_dir
 
     def upload(self, file_path, category):
         """
         上传
         """
 
-        dst_dir = os.path.join(self.remote_dir, category)
+        dst_dir = os.path.join(self.root_dir, category)
 
         if not os.path.exists(dst_dir):
             os.makedirs(dst_dir)
@@ -32,11 +32,15 @@ class LocalBackend(BaseBackend):
 
         shutil.copy(file_path, dst_dir)
 
-    def clean(self, category, keeps):
+    def clean(self, category, keeps=None):
         """
         删除掉不需要的
         """
-        dst_dir = os.path.join(self.remote_dir, category)
+        keeps = keeps or self.keeps
+        if not keeps:
+            return
+
+        dst_dir = os.path.join(self.root_dir, category)
 
         delete_filename_list = filter_delete_filename_list(os.listdir(dst_dir), keeps)
         for filename in delete_filename_list:

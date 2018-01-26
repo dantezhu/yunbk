@@ -19,8 +19,8 @@ class FTPBackend(BaseBackend):
 
     ftp = None
 
-    def __init__(self, host, username, password, remote_dir, port=None):
-        super(FTPBackend, self).__init__()
+    def __init__(self, host, username, password, remote_dir, port=None, keeps=None):
+        super(FTPBackend, self).__init__(keeps)
         self.host = host
         self.port = port or 21
         self.username = username
@@ -50,7 +50,11 @@ class FTPBackend(BaseBackend):
 
         #self.ftp.quit()
 
-    def clean(self, category, keeps):
+    def clean(self, category, keeps=None):
+        keeps = keeps or self.keeps
+        if not keeps:
+            return
+
         dst_dir = os.path.join(self.remote_dir, category)
         filename_list = self.ftp.nlst(dst_dir)
 
