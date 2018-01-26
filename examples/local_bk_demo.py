@@ -5,14 +5,23 @@ from yunbk.backend.local import LocalBackend
 from yunbk.constants import KEEPS_NORMAL
 import sh
 import shutil
-
 import logging
+
+KEEPS_APP = dict(
+    months=7,
+    weeks=2,
+    days=4,
+    seconds=3600*24,
+)
+
 logger = logging.getLogger('yunbk')
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
 
-backend = LocalBackend('/data/backup')
-with YunBK('yb', [backend], keeps=KEEPS_NORMAL) as ybk:
+backend = LocalBackend('/data/backup', keeps=KEEPS_NORMAL)
+# 这种写法将会以KEEPS_APP为准
+# 如果KEEPS为None，将会以backend中的keeps为准
+with YunBK('yb', [backend], keeps=KEEPS_APP) as ybk:
     # 生成文件
     with open('t.txt', 'w') as f:
         f.write('ok')
