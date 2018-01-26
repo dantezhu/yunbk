@@ -82,10 +82,7 @@ class YunBK(object):
         """
         清理无用的
         """
-        if not self.keeps:
-            # 就是不删除
-            return
-
+        # 无论keeps是否有值，都要往下执行，因为backend可能有自己的keeps
         for backend in self.backends:
             try:
                 backend.clean(self.backup_name, self.keeps)

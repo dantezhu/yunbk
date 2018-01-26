@@ -17,14 +17,14 @@ class OSSBackend(BaseBackend):
 
     bucket = None
 
-    def __init__(self, access_key_id, access_key_secret, host, bucket_name):
+    def __init__(self, access_key_id, access_key_secret, host, bucket_name, keeps=None):
         """
         access_key_id:
         access_key_secret:
         host: 域名，如 http://oss-cn-hangzhou.aliyuncs.com
         bucket_name: 不需要在后台自动创建，也会自动创建好
         """
-        super(OSSBackend, self).__init__()
+        super(OSSBackend, self).__init__(keeps)
         auth = oss2.Auth(access_key_id, access_key_secret)
         self.bucket = oss2.Bucket(auth, host, bucket_name)
 
@@ -48,7 +48,11 @@ class OSSBackend(BaseBackend):
         if rsp.status != 200:
             raise Exception('put_object_from_file fail: <%s> %s' % (rsp.status, rsp.read()))
 
-    def clean(self, category, keeps):
+    def clean(self, category, keeps=None):
+        keeps = keeps or self.keeps
+        if not keeps:
+            return
+
         object_list = [obj.key for obj in self.bucket.list_objects(category+'/').object_list]
         delete_filename_list = filter_delete_filename_list(object_list, keeps)
         if delete_filename_list:
