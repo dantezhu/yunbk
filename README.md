@@ -3,6 +3,8 @@ yunbk
 
 make backup easier.
 
+python2, python3 supported
+
 
 ### 说明
 
