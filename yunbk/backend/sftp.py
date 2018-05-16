@@ -6,6 +6,7 @@ import errno
 import paramiko
 from .base import BaseBackend
 from ..utils import filter_delete_filename_list
+from ..six import reraise
 
 
 class SFTPBackend(BaseBackend):
@@ -45,7 +46,7 @@ class SFTPBackend(BaseBackend):
                 self.transport.close()
 
             t, v, tb = sys.exc_info()
-            raise t, v, tb
+            reraise(t, v, tb)
 
     def upload(self, file_path, category):
         """
@@ -56,7 +57,7 @@ class SFTPBackend(BaseBackend):
         dst_dir = os.path.join(self.remote_dir, category)
         try:
             self.sftp.stat(dst_dir)
-        except IOError, e:
+        except IOError as e:
             # 说明没有文件
             if e.errno == errno.ENOENT:
                 self.sftp.mkdir(dst_dir)

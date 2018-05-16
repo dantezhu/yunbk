@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import constants
+from . import constants
 
 
 logger = logging.getLogger(constants.NAME)
