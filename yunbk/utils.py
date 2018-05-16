@@ -2,8 +2,8 @@
 
 import datetime
 from grandfatherson import to_delete, to_keep
-import constants
-from log import logger
+from . import constants
+from .log import logger
 
 
 def filter_delete_filename_list(filename_list, keeps):
@@ -25,10 +25,10 @@ def filter_delete_filename_list(filename_list, keeps):
         try:
             dt = datetime.datetime.strptime(str_datetime, constants.STRFTIME_TPL)
             time_to_filename[dt] = filename
-        except Exception, e:
+        except Exception as e:
             logger.error('exc occur. e: %s, filename: %s', e, filename, exc_info=True)
 
     # 要删除的时间，如果同一天有好多个的话，只保留第一个
-    delete_times = to_delete(time_to_filename.keys(), **keeps)
+    delete_times = to_delete(list(time_to_filename.keys()), **keeps)
 
     return [time_to_filename[it] for it in delete_times]

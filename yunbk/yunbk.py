@@ -7,8 +7,8 @@ import tempfile
 import shutil
 import sh
 
-import constants
-from log import logger
+from . import constants
+from .log import logger
 
 
 class YunBK(object):
@@ -68,7 +68,7 @@ class YunBK(object):
         for backend in self.backends:
             try:
                 backend.upload(tar_file_path, self.backup_name)
-            except Exception, e:
+            except Exception as e:
                 logger.error('exc occur. e: %s, tar_file_path: %s, backend: %s',
                              e, tar_file_path, backend, exc_info=True)
 
@@ -86,5 +86,5 @@ class YunBK(object):
         for backend in self.backends:
             try:
                 backend.clean(self.backup_name, self.keeps)
-            except Exception, e:
+            except Exception as e:
                 logger.error('exc occur. e: %s, backend: %s', e, backend, exc_info=True)
