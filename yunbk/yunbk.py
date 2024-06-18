@@ -5,7 +5,6 @@ import datetime
 import tarfile
 import tempfile
 import shutil
-import sh
 
 from . import constants
 from .log import logger
@@ -35,7 +34,7 @@ class YunBK(object):
         """
         self.old_work_dir = os.getcwd()
         self.tmp_work_dir = tempfile.mkdtemp(prefix=self.dir_prefix, dir=self.tmp_root_dir)
-        sh.cd(self.tmp_work_dir)
+        os.chdir(self.tmp_work_dir)
         logger.info("New current working directory: %s", self.tmp_work_dir)
         return self
 
@@ -43,7 +42,7 @@ class YunBK(object):
         """Reseting the current working directory,
             and run synchronization if enabled.
         """
-        sh.cd(self.old_work_dir)
+        os.chdir(self.old_work_dir)
         logger.info("Back to %s", self.old_work_dir)
         shutil.rmtree(self.tmp_work_dir)
 

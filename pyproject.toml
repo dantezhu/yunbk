@@ -9,7 +9,7 @@ authors = [{name = "dantezhu", email = "zny2008@gmail.com"}]
 license = {text = "MIT"}
 description = "make backup easier"
 urls = {Homepage = "https://github.com/dantezhu/yunbk"}
-dependencies = ["paramiko", "sh", "grandfatherson"]
+dependencies = ["paramiko", "grandfatherson"]
 
 [tool.setuptools]
 zip-safe = false

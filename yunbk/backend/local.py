@@ -15,6 +15,7 @@ class LocalBackend(BaseBackend):
 
     def __init__(self, root_dir, keeps=None):
         super(LocalBackend, self).__init__(keeps)
+        assert os.path.isabs(root_dir), f'Must be an absolute path: {root_dir}'
         self.root_dir = root_dir
 
     def upload(self, file_path, category):
