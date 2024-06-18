@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "yunbk"
-version = "0.2.2"
+version = "0.2.3"
 authors = [{name = "dantezhu", email = "zny2008@gmail.com"}]
 license = {text = "MIT"}
 description = "make backup easier"
